@@ -1,10 +1,11 @@
-import { useCatch } from "@remix-run/react";
+import { Outlet, useCatch } from "@remix-run/react";
 
 
 export default function BookDetailPage() {
     return (
       <div className="border-solid border-2 border-red-600">
         $bookId.tsx from /books/$bookId
+        <Outlet/>
       </div>
     );
 }

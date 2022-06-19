@@ -1,12 +1,15 @@
-import { Outlet, useCatch } from "@remix-run/react";
+import { Link, Outlet, useCatch } from "@remix-run/react";
 
 export default function BookListPage() {
     return (
-      <div className="border-solid border-2 border-indigo-600">
-        index.tsx from /books
-        <Outlet/>
+      <div className="border-solid border-4 border-yellow-200 flex flex-col items-center">
         <div>
-            <h1 className="underline-offset-4">Books list</h1>
+            books.tsx from /routes
+            <Outlet/>
+            <Link to="/books/new">Add Book</Link>
+            <div>
+                <h1 className="font-bold">Books list</h1>
+            </div>
         </div>
       </div>
     );
