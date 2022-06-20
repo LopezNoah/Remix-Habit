@@ -9,3 +9,6 @@ node_modules
 /public/build
 /api/index.js
 /api/index.js.map
+
+/app/cosmos.userdeps.js
+/app/routes/cosmos.tsx

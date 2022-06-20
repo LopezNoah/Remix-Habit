@@ -1,6 +1,6 @@
 import { Link, useCatch } from "@remix-run/react";
 import { EmailTextBox } from "~/components/EmailTextBox";
-import { PasswordTextBox } from "~/components/PaswordTextBox";
+import { PasswordTextBox } from "~/components/PasswordTextBox";
 
 export default function Login() {
     return (

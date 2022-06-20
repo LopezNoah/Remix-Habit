@@ -1,5 +1,22 @@
-import { Outlet, useCatch } from "@remix-run/react";
+import { Book } from "@prisma/client";
+import { LoaderFunction } from "@remix-run/node";
+import { Outlet, useCatch, useSearchParams, useParams } from "@remix-run/react";
+import { db } from "~/utils/db.server";
 
+
+type LoaderData = { book: Book | undefined };
+
+export const loader: LoaderFunction = async({params}) => {
+    const bookId = parseInt(params.bookId || "0");
+
+    const book = await db.book.findUnique(
+        { where: { Id: bookId } }
+    );
+    console.log(book);
+    if(!book) throw new Error("Books not found");
+    const data: LoaderData = { book };
+    return data;
+}
 
 export default function BookDetailPage() {
     return (

@@ -2,85 +2,61 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["referentialIntegrity", "filterJson"]
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
   referentialIntegrity = "prisma"
 }
 
 model Book {
-  Id Int @id @default(autoincrement())
-  CreatedAt DateTime @default(now())
-  UpdatedAt DateTime @updatedAt
-  Name String
-  Author String
-  PublishedDate DateTime?
-  PageCount Int @default(0)
+  Id              Int              @id @default(autoincrement())
+  CreatedAt       DateTime         @default(now())
+  UpdatedAt       DateTime         @updatedAt
+  Name            String
+  Author          String
+  PublishedDate   DateTime?
+  PageCount       Int              @default(0)
   ReadingSessions ReadingSession[]
 }
 
 model ReadingSession {
   CreatedAt DateTime @default(now())
   UpdatedAt DateTime @updatedAt
-
   StartTime DateTime
-  EndTime DateTime
+  EndTime   DateTime
 
   //Foreign relations
-  UserId Int @unique
-  User User @relation(fields: [UserId], references: [Id])
+  UserId Int  @unique
+  User   User @relation(fields: [UserId], references: [Id])
   BookId Int
-  Book Book @relation(fields: [BookId], references: [Id])
+  Book   Book @relation(fields: [BookId], references: [Id])
 
-  @@id([BookId, UserId]) // Composite key
+  @@id([BookId, UserId])
   @@index(BookId)
   @@index(UserId)
 }
 
 model User {
   Email String? @unique
-  Name String?
-  Id Int @id @default(autoincrement())
+  Name  String?
+  Id    Int     @id @default(autoincrement())
 
   //Foreign relations
-  Profile Profile?
+  Profile         Profile?
   ReadingSessions ReadingSession[]
-  ExerciseSessions ExerciseSession[]
 }
 
 model Profile {
-  Id Int @id @default(autoincrement())
+  Id  Int     @id @default(autoincrement())
   Bio String?
 
   //Foreign relations
-  UserId Int @unique
-  User User @relation(fields: [UserId], references: [Id])
+  UserId Int  @unique
+  User   User @relation(fields: [UserId], references: [Id])
 
-  @@index(UserId)
-}
-
-
-model Exercise {
-  Id Int @id @default(autoincrement())
-  Name String
-  ExerciseSessions ExerciseSession[]
-}
-
-model ExerciseSession {
-  StartTime DateTime
-  EndTime DateTime
-
-  //Foreign relations
-  ExerciseId Int
-  Exercise Exercise @relation(fields:[ExerciseId], references: [Id])
-  UserId Int @unique
-  User User @relation(fields:[UserId], references: [Id])
-
-  @@id([ExerciseId, UserId]) //Composite key
-  @@index(ExerciseId)
   @@index(UserId)
 }
