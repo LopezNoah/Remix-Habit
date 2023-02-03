@@ -8,25 +8,33 @@ generator client {
 }
 
 model User {
-  Id    String @id @default(cuid())
-  Email String @unique
-  IsActive Boolean @default(true)
+  Id          Int       @id @default(autoincrement())
+  Email       String    @unique
+  Bio         String?
+  IsActive    Boolean   @default(true)
+  CreatedAt   DateTime  @default(now())
+  UpdatedAt   DateTime  @updatedAt
+  InactivedAt DateTime?
 
-  CreatedAt DateTime @default(now())
-  UpdatedAt DateTime @updatedAt
-
-  Password Password?
-  Notes    Note[]
+  Tags            Tag[]
+  Rating          Rating[]
+  ChallengesWon   Challenge[]
+  ReadingSessions ReadingSession[]
+  Members         GroupMember[]
+  Borrower        BookLending[]    @relation("Borrower")
+  Lender          BookLending[]    @relation("Lender")
+  Passwords       Password[]
+  Notes           Note[]
 }
 
 model Password {
-  Hash String
-  IsActive Boolean @default(true)
+  Hash      String   @unique
+  IsActive  Boolean  @default(true)
   CreatedAt DateTime @default(now())
   UpdatedAt DateTime @updatedAt
 
-  User   User   @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: Cascade)
-  UserId String @unique
+  UserId Int
+  User   User @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Note {
@@ -37,6 +45,143 @@ model Note {
   CreatedAt DateTime @default(now())
   UpdatedAt DateTime @updatedAt
 
-  User   User   @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: Cascade)
-  UserId String
+  UserId Int
+  User   User @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model ReadingSession {
+  Id        Int      @id @default(autoincrement())
+  Guid      String
+  CreatedAt DateTime @default(now())
+  UpdatedAt DateTime @default(now()) @updatedAt
+  StartTime DateTime
+  EndTime   DateTime
+  Duration  Int
+  PageStart Int
+  PageEnd   Int
+  UserId    Int      @unique
+  User      User     @relation(fields: [UserId], references: [Id])
+  BookId    Int
+  Book      Book     @relation(fields: [BookId], references: [Id])
+
+  @@index([UserId])
+  @@index([BookId])
+}
+
+model Tag {
+  Id        Int      @id @default(autoincrement())
+  Guid      String
+  Name      String
+  CreatedAt DateTime @default(now())
+  UpdatedAt DateTime @default(now()) @updatedAt
+  UserId    Int
+  User      User     @relation(fields: [UserId], references: [Id])
+  Books     Book[]
+
+  @@index([UserId])
+}
+
+model Book {
+  Id              Int              @id @default(autoincrement())
+  Guid            String
+  CreatedAt       DateTime         @default(now())
+  UpdatedAt       DateTime         @default(now())
+  Title           String
+  Author          String
+  StartDate       DateTime?
+  EndDateGoal     DateTime?
+  PageCount       Int              @default(0)
+  CurrentPage     Int              @default(0)
+  TimesRead       Int              @default(0)
+  IsActive        Boolean          @default(true)
+  UserId          Int
+  Tags            Tag[]
+  Authors         Author[]
+  Rating          Rating[]
+  ReadingSessions ReadingSession[]
+  Loans           BookLending[]
+
+  @@unique([Title, UserId])
+  @@index([UserId])
+}
+
+model Group {
+  Id         Int           @id @default(autoincrement())
+  Members    GroupMember[]
+  Challenges Challenge[]
+}
+
+model GroupMember {
+  Id      Int   @id @default(autoincrement())
+  UserId  Int
+  User    User  @relation(fields: [UserId], references: [Id])
+  GroupId Int
+  Group   Group @relation(fields: [GroupId], references: [Id])
+
+  @@index([UserId])
+  @@index([GroupId])
+}
+
+model GroupType {
+  Id Int @id @default(autoincrement())
+}
+
+model BookLending {
+  Id           Int       @id @default(autoincrement())
+  StartDate    DateTime
+  EndDate      DateTime
+  ReturnStatus String
+  ReturnDate   DateTime?
+  BookId       Int
+  Book         Book      @relation(fields: [BookId], references: [Id])
+  LenderId     Int
+  Lender       User      @relation("Lender", fields: [LenderId], references: [Id])
+  BorrowerId   Int
+  Borrower     User      @relation("Borrower", fields: [BorrowerId], references: [Id])
+
+  @@index([LenderId])
+  @@index([BorrowerId])
+  @@index([BookId])
+}
+
+model Library {
+  Id Int @id @default(autoincrement())
+}
+
+model Author {
+  Id        Int    @id @default(autoincrement())
+  FirstName String
+  LastName  String
+  Books     Book[]
+}
+
+model Rating {
+  Id     Int   @id @default(autoincrement())
+  Score  Float @default(0)
+  UserId Int
+  BookId Int
+
+  User User @relation(fields: [UserId], references: [Id])
+  Book Book @relation(fields: [BookId], references: [Id])
+
+  @@index([UserId])
+  @@index([BookId])
+}
+
+model Challenge {
+  Id             Int       @id @default(autoincrement())
+  Name           String
+  Type           String
+  Goal           String
+  Deadline       DateTime
+  Completed      Boolean
+  CompletionDate DateTime?
+  WinnerId       Int
+  GroupId        Int
+
+  Winner User  @relation(fields: [WinnerId], references: [Id])
+  Group  Group @relation(fields: [GroupId], references: [Id])
+
+  @@index([WinnerId])
+  @@index([GroupId])
 }
