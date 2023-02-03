@@ -7,6 +7,7 @@ import { useUser } from "~/utils";
 import { getNoteListItems } from "~/models/note.server";
 
 export async function loader({ request }: LoaderArgs) {
+  console.log("hello world");
   const userId = await requireUserId(request);
   const noteListItems = await getNoteListItems({ userId });
   return json({ noteListItems });
@@ -22,7 +23,7 @@ export default function NotesPage() {
         <h1 className="text-3xl font-bold">
           <Link to=".">Notes</Link>
         </h1>
-        <p>{user.email}</p>
+        <p>{user.Email}</p>
         <Form action="/logout" method="post">
           <button
             type="submit"
@@ -46,14 +47,14 @@ export default function NotesPage() {
           ) : (
             <ol>
               {data.noteListItems.map((note) => (
-                <li key={note.id}>
+                <li key={note.Id}>
                   <NavLink
                     className={({ isActive }) =>
                       `block border-b p-4 text-xl ${isActive ? "bg-white" : ""}`
                     }
-                    to={note.id}
+                    to={note.Id}
                   >
-                    📝 {note.title}
+                    📝 {note.Title}
                   </NavLink>
                 </li>
               ))}

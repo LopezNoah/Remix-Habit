@@ -5,58 +5,63 @@ import { prisma } from "~/db.server";
 
 export type { User } from "@prisma/client";
 
-export async function getUserById(id: User["id"]) {
-  return prisma.user.findUnique({ where: { id } });
+export async function getUserById(id: User["Id"]) {
+  return prisma.user.findUnique({ where: { Id: id } });
 }
 
-export async function getUserByEmail(email: User["email"]) {
-  return prisma.user.findUnique({ where: { email } });
+export async function getUserByEmail(email: User["Email"]) {
+  return prisma.user.findUnique({ where: { Email: email } });
 }
 
-export async function createUser(email: User["email"], password: string) {
+export async function createUser(email: User["Email"], password: string) {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   return prisma.user.create({
     data: {
-      email,
-      password: {
+      Email: email,
+      Passwords: {
         create: {
-          hash: hashedPassword,
+          Hash: hashedPassword,
+          IsActive: true
         },
       },
     },
   });
 }
 
-export async function deleteUserByEmail(email: User["email"]) {
-  return prisma.user.delete({ where: { email } });
+export async function deleteUserByEmail(email: User["Email"]) {
+  return prisma.user.delete({ where: { Email: email } });
 }
 
 export async function verifyLogin(
-  email: User["email"],
-  password: Password["hash"]
+  email: User["Email"],
+  password: Password["Hash"]
 ) {
   const userWithPassword = await prisma.user.findUnique({
-    where: { email },
+    where: { Email: email },
     include: {
-      password: true,
+      Passwords: {
+        where: {
+          IsActive: true
+        }
+      },
     },
   });
 
-  if (!userWithPassword || !userWithPassword.password) {
+  if (!userWithPassword || !userWithPassword.Passwords) {
     return null;
   }
 
   const isValid = await bcrypt.compare(
     password,
-    userWithPassword.password.hash
+    userWithPassword.Passwords[0].Hash
   );
 
   if (!isValid) {
     return null;
   }
 
-  const { password: _password, ...userWithoutPassword } = userWithPassword;
+  const { Passwords: _password, ...userWithoutPassword } = userWithPassword;
 
   return userWithoutPassword;
 }

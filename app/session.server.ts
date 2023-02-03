@@ -17,7 +17,7 @@ export const sessionStorage = createCookieSessionStorage({
   },
 });
 
-const USER_SESSION_KEY = "userId";
+const USER_SESSION_KEY = "UserId";
 
 export async function getSession(request: Request) {
   const cookie = request.headers.get("Cookie");
@@ -26,7 +26,7 @@ export async function getSession(request: Request) {
 
 export async function getUserId(
   request: Request
-): Promise<User["id"] | undefined> {
+): Promise<User["Id"] | undefined> {
   const session = await getSession(request);
   const userId = session.get(USER_SESSION_KEY);
   return userId;
@@ -70,7 +70,7 @@ export async function createUserSession({
   redirectTo,
 }: {
   request: Request;
-  userId: string;
+  userId: number;
   remember: boolean;
   redirectTo: string;
 }) {

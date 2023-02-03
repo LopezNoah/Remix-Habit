@@ -28,7 +28,8 @@ model User {
 }
 
 model Password {
-  Hash      String   @unique
+  Id        Int      @id @default(autoincrement())
+  Hash      String
   IsActive  Boolean  @default(true)
   CreatedAt DateTime @default(now())
   UpdatedAt DateTime @updatedAt
