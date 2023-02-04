@@ -10,7 +10,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
   invariant(params.noteId, "noteId not found");
 
-  const note = await getNote({ userId, id: params.noteId });
+  const note = await getNote({ Id: params.noteId, userId });
   if (!note) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -21,7 +21,7 @@ export async function action({ request, params }: ActionArgs) {
   const userId = await requireUserId(request);
   invariant(params.noteId, "noteId not found");
 
-  await deleteNote({ userId, id: params.noteId });
+  await deleteNote({ Id: params.noteId, userId });
 
   return redirect("/notes");
 }
@@ -31,8 +31,8 @@ export default function NoteDetailsPage() {
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">{data.note.title}</h3>
-      <p className="py-6">{data.note.body}</p>
+      <h3 className="text-2xl font-bold">{data.note.Title}</h3>
+      <p className="py-6">{data.note.Body}</p>
       <hr className="my-4" />
       <Form method="post">
         <button
