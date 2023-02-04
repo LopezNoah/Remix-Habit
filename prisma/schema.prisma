@@ -16,6 +16,7 @@ model User {
   UpdatedAt   DateTime  @updatedAt
   InactivedAt DateTime?
 
+  Books           Book[]
   Tags            Tag[]
   Rating          Rating[]
   ChallengesWon   Challenge[]
@@ -71,7 +72,7 @@ model ReadingSession {
 
 model Tag {
   Id        Int      @id @default(autoincrement())
-  Guid      String
+  Guid      String   @default(cuid())
   Name      String
   CreatedAt DateTime @default(now())
   UpdatedAt DateTime @default(now()) @updatedAt
@@ -84,7 +85,7 @@ model Tag {
 
 model Book {
   Id              Int              @id @default(autoincrement())
-  Guid            String
+  Guid            String           @default(cuid())
   CreatedAt       DateTime         @default(now())
   UpdatedAt       DateTime         @default(now())
   Title           String
@@ -96,6 +97,7 @@ model Book {
   TimesRead       Int              @default(0)
   IsActive        Boolean          @default(true)
   UserId          Int
+  User            User             @relation(fields: [UserId], references: [Id])
   Tags            Tag[]
   Authors         Author[]
   Rating          Rating[]
