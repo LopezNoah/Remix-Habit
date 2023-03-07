@@ -29,10 +29,10 @@ export function getBooksByUserId({ userId }: { userId: User["Id"] }) {
     });
 }
 
-export function getBookByUserId({ Id, userId }: {Id: Book["Id"], userId: User["Id"] }) {
-    return prisma.book.findMany({
+export function getBookByUserId({ Id }: {Id: Book["Id"] }) {
+    return prisma.book.findUnique({
         where: {
-            UserId: userId,
+            // UserId: userId,
             Id: Id
         },
         select: {
@@ -58,10 +58,7 @@ export function getBookByUserId({ Id, userId }: {Id: Book["Id"], userId: User["I
                     PageEnd: true
                 }
             }
-        },
-        orderBy: {
-            UpdatedAt: "desc"
-        },
+        }
     });
 }
 

@@ -30,8 +30,10 @@ export default function BookListPage() {
     const { books, isMobile } = useTypedLoaderData<typeof loader>();
 
     return (
-        isMobile ? (<MobileBooksContainer books={books} />
-        ) : null //Fix this later
+        <MobileBooksContainer books={books} />
+
+        // isMobile ? (<MobileBooksContainer books={books} />
+        // ) : null //Fix this later
     );
 }
 
