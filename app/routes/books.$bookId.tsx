@@ -1,6 +1,7 @@
 import { Form, Link, Outlet, useActionData, useCatch, useLoaderData, useTransition } from "@remix-run/react";
 import { ActionArgs, json, LoaderArgs } from "@remix-run/server-runtime";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
+import Timer from "~/components/timer";
 import { getBookByUserId } from "~/models/book.server";
 import { requireUserId } from "~/session.server";
 
@@ -58,6 +59,7 @@ export default function BookDetailPage() {
                 {/* Make this button actually update the text fields */}
                 <button name="intent" value={"update"} disabled={isUpdating}>{isUpdating ? "Updating..." : "Update"}</button>
             </div>
+            <Timer />
         </Form>
     );
 }

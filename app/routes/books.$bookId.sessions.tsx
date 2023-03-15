@@ -5,6 +5,8 @@ import { requireUserId } from "~/session.server";
 import { prisma } from "~/db.server";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import { ReadingSession } from "@prisma/client";
+import Timer from "~/components/timer";
+import ReadingLogForm from "~/components/ReadingLogForm";
 
 
 type ContextType = { readingSessions: ReadingSession[] | null};
@@ -21,6 +23,10 @@ export async function loader({ request, params }: LoaderArgs) {
 }
 
 export async function action({ request, params}: ActionArgs) {
+    const form = await request.formData();
+    const duration = form.get("duration");
+    console.log(JSON.stringify(form));
+    console.log(duration);
     return "hello world";
 }
 
@@ -40,24 +46,8 @@ export default function BookDetailPage() {
                 <p>No reading session logged!</p>
             }
             <Form method="post">
-                <div>Log reading session</div>
-                <div className="flex flex-col gap-2">
-                    <div className="flex justify-around">
-                        <label htmlFor="date">Date</label>
-                        <input type="date" name="date" id="date" />
-                    </div>
-                    <div className="flex justify-around">
-                        <label htmlFor="startTime">Start Time</label>
-                        <input type="time" name="startTime" id="startTime" />
-                    </div>
-                    <div className="flex justify-around">
-                        <label htmlFor="endTime">End Time</label>
-                        <input type="time" name="endTime" id="endTime" />
-                    </div>
-                    <button name="intent" value={"update"} disabled={isUpdating}>{isUpdating ? "Submitting..." : "Submit"}</button>
-                </div>
+                <ReadingLogForm />
             </Form>
-
             <Outlet />
         </div>
     );
