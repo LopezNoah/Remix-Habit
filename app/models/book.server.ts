@@ -1,4 +1,5 @@
-import type { User, Book } from "@prisma/client";
+import type { User, Book, Prisma } from "@prisma/client";
+import { z } from "zod";
 
 import { prisma } from "~/db.server";
 
@@ -29,7 +30,7 @@ export function getBooksByUserId({ userId }: { userId: User["Id"] }) {
     });
 }
 
-export function getBookByUserId({ Id }: {Id: Book["Id"] }) {
+export function getBookByUserId(Id: number) {
     return prisma.book.findUnique({
         where: {
             // UserId: userId,
@@ -86,4 +87,30 @@ export function deleteBook({ Id }: Pick<Book, "Id">) {
         },
     });
 }
-  
+
+const CreateSessionInputSchema = z.object({
+    //startTime: z.date(),
+    //endTime: z.date(),
+    duration: z.number(),
+    bookId: z.number(),
+    pageStart: z.number(),
+    pageEnd: z.number(),
+    userId: z.number()
+});
+
+type createReadingSessionInput = z.infer<typeof CreateSessionInputSchema>;
+
+export function createReadingSession(data: createReadingSessionInput) {
+    const readingSession = prisma.readingSession.create({
+        data: {
+            BookId: data.bookId,
+            Duration: data.duration,
+            PageStart: data.pageStart,
+            PageEnd: data.pageEnd,
+            StartTime: new Date(),
+            EndTime: new Date(),
+            UserId: data.userId,
+        }
+    });
+    return readingSession;
+}

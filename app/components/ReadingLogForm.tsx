@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 
+//TODO: Add props for default page start when creating new session.
+// should use the last known max value for pageEnd
+
 export function ReadingLogForm() {
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [duration, setDuration] = useState(0);
+  const [pageStart, setPageStart] = useState(0);
+  const [pageEnd, setPageEnd] = useState(0);
 
   const handleDateChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setDate(event.target.value);
@@ -16,6 +21,16 @@ export function ReadingLogForm() {
 
   const handleEndTimeChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setEndTime(event.target.value);
+  };
+
+  const handlePageEndChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    const pageEndValue = Number(event.target.value);
+    setPageEnd(pageEndValue);
+  };
+
+  const handlePageStartChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    const pageStartValue = Number(event.target.value);
+    setPageStart(pageStartValue);
   };
 
   const handleDurationChange = (event: { target: { value: any; }; }) => {
@@ -39,6 +54,14 @@ export function ReadingLogForm() {
         <div className="flex justify-around">
           <label htmlFor="endTime">End Time</label>
           <input type="time" name="endTime" id="endTime" value={endTime} onChange={handleEndTimeChange} />
+        </div>
+        <div className="flex justify-around">
+          <label htmlFor="duration">Page Start</label>
+          <input type="number" name="pageStart" id="pageStart" value={pageStart} onChange={handlePageStartChange} />
+        </div>
+        <div className="flex justify-around">
+          <label htmlFor="duration">Page End</label>
+          <input type="number" name="pageEnd" id="pageEnd" value={pageEnd} onChange={handlePageEndChange} />
         </div>
         <div className="flex justify-around">
           <label htmlFor="duration">Duration (minutes)</label>
