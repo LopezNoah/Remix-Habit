@@ -25,20 +25,12 @@ async function seed() {
     },
   });
 
-  await prisma.note.create({
+  await prisma.book.create({
     data: {
-      Title: "My first note",
-      Body: "Hello, world!",
-      UserId: user.Id,
-    },
-  });
-
-  await prisma.note.create({
-    data: {
-      Title: "My second note",
-      Body: "Hello, world!",
-      UserId: user.Id,
-    },
+      Title: "Red Mars",
+      Author: "Kim Stanley Robinson",
+      UserId: user.Id
+    }
   });
 
   console.log(`Database has been seeded. 🌱`);

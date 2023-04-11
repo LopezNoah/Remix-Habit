@@ -25,7 +25,6 @@ model User {
   Borrower        BookLending[]    @relation("Borrower")
   Lender          BookLending[]    @relation("Lender")
   Passwords       Password[]
-  Notes           Note[]
 }
 
 model Password {
@@ -39,21 +38,9 @@ model Password {
   User   User @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: Cascade)
 }
 
-model Note {
-  Id    String @id @default(cuid())
-  Title String
-  Body  String
-
-  CreatedAt DateTime @default(now())
-  UpdatedAt DateTime @updatedAt
-
-  UserId Int
-  User   User @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: Cascade)
-}
-
 model ReadingSession {
   Id        Int      @id @default(autoincrement())
-  Guid      String
+  Guid      String   @default(cuid())
   CreatedAt DateTime @default(now())
   UpdatedAt DateTime @default(now()) @updatedAt
   StartTime DateTime
