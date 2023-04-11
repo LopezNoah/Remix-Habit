@@ -7,6 +7,8 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  V2_MetaArgs,
+  V2_MetaFunction,
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
@@ -16,11 +18,16 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
 };
 
-export const meta: MetaFunction = () => ({
-  charset: "utf-8",
-  title: "Remix Notes",
-  viewport: "width=device-width,initial-scale=1",
-});
+// export function meta ({ matches }: V2_MetaArgs): V2_MetaFunction {
+//   let rootMeta = matches[0].meta;
+//   //let title = rootMeta.find((m) => m.title);
+
+//   return [
+//     { charset: "utf-8" },
+//     { title: "Remix Notes" },
+//     {viewport: "width=device-width,initial-scale=1"}
+//   ]
+// };
 
 export async function loader({ request }: LoaderArgs) {
   return json({
