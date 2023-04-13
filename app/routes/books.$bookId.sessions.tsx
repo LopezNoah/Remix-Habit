@@ -11,6 +11,15 @@ import * as z from "zod";
 
 
 type ContextType = { readingSessions: ReadingSession[] | null};
+type ReadingSessionType = {
+    Id: number,
+    StartTime: Date,
+    EndTime: Date,
+    Duration: number,
+    PageStart: number,
+    PageEnd: number
+};
+
 
 const CreateSessionInputSchema = z.object({
     //startTime: z.date(),
@@ -46,10 +55,15 @@ export async function action({ request, params}: ActionArgs) {
     const formData = Object.fromEntries(form.entries());
     console.log(formData);
     const duration = Number(form.get("duration"));
-    const startTime = form.get("startTime");
-    const endTime = form.get("endTime");
+    // const startTime = String(form.get("startTime"));
+    // const endTime = String(form.get("endTime"));
     const pageStart = Number(form.get("pageStart"));
     const pageEnd = Number(form.get("pageEnd"));
+
+    // const startDate = new Date(startTime);
+    // const endDate = new Date(endTime);
+    // console.log(startDate);
+    // console.log(endDate);
 
     const createSessionInput = CreateSessionInputSchema.parse(
             {
@@ -59,7 +73,7 @@ export async function action({ request, params}: ActionArgs) {
                 pageEnd: pageEnd,
                 userId: userId
             });
-    const readingSession = await createReadingSession(createSessionInput);
+    /*const readingSession = await createReadingSession(createSessionInput);
     if (!readingSession){
         throw new Error("The reading session wasn't created!");
     }
@@ -67,7 +81,7 @@ export async function action({ request, params}: ActionArgs) {
     //     throw new Error("Missing data for reading session.");
     // }
 
-    return readingSession;
+    return readingSession;*/
 }
 
 export default function BookDetailPage() {
@@ -75,14 +89,16 @@ export default function BookDetailPage() {
     const navigation = useNavigation();
     const isUpdating = navigation?.formData?.get("intent") == "update";
 
-    const data = useTypedLoaderData<typeof loader>();
-    const sessions = useOutletContext<ContextType>();
-    const sessionLength = sessions?.readingSessions?.length ?? 0;
+    //const data = useTypedLoaderData<typeof loader>();
+    const outletData = useOutletContext<ContextType>();
+    const readingSessions = outletData?.readingSessions;
+    const sessionLength = readingSessions?.length ?? 0;
+    const lastPage = sessionLength > 0 ? 1 : 0;
 
     return (
         <div className="flex flex-col gap-2">
-            {sessionLength == 0 ?
-                <SessionsList sessions={sessions} /> :
+            {sessionLength > 0 ?
+                <SessionsList sessions={readingSessions} /> :
                 <p>No reading session logged!</p>
             }
             <Form method="post" className="border-2 border-slate-900 p-2 rounded-md">
@@ -93,15 +109,15 @@ export default function BookDetailPage() {
     );
 }
 
-
-function SessionsList({ sessions }: any) {
+//{ sessions: {Id: number, StartTime: Date, EndTime: Date, PageStart: number, PageEnd: number}[] }) {
+function SessionsList({ sessions }: { sessions: any }) {
     return (
         <div>
             <ul>
-                {sessions.map((session: any) => (
+                {sessions?.map((session: any) => (
                     <li key={session.Id} className="flex bg-slate-50 rounded-md p-2 border-2 border-slate-900">
-                        <span>Date: { new Date(session.StartTime).toLocaleDateString() }</span>
-                        <span>Read Time: { (new Date(session.EndTime).getTime() - new Date(session.StartTime)
+                        <span>Date: { session.StartTime.toLocaleDateString() }</span>
+                        <span>Read Time: { (session.EndTime.getTime() - session.StartTime
                             .getTime()) / (60 * 60 * 1000) } minute(s)
                         </span>
                         <span>Pages Read: { session.PageEnd - session.PageStart }</span>
