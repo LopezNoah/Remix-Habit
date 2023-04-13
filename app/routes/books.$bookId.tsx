@@ -35,32 +35,29 @@ export default function BookDetailPage() {
 
 
     return (
-        <Form method="post" key={book.Id ?? "new"}>
-            <div className="border-solid border-[3px] bg-gray-200 border-slate-900 w-96 p-2 rounded-xl text-black">
-                <div className="grid grid-cols-2 p-2">
-                    <div className="flex flex-col">
-                        <div>
-                            <span className="italic font-medium">{ book?.Title }</span>
-                            <span> by </span>
-                            <span className="font-medium">{ book?.Author }</span>
-                        </div>
-                        <span>{"Started Reading: " + (book?.StartDate ?? "N/A")}</span>
-                        <span>Progress: { book?.CurrentPage ?? 0 } / { book?.PageCount } pages</span>
-                        <span>Total Read Time: { totalReadTime } minutes</span>
+        <div className="border-solid border-[3px] bg-gray-200 border-slate-900 w-96 p-2 rounded-xl text-black">
+            <div className="grid grid-cols-2 p-2">
+                <div className="flex flex-col">
+                    <div>
+                        <span className="italic font-medium">{ book?.Title }</span>
+                        <span> by </span>
+                        <span className="font-medium">{ book?.Author }</span>
                     </div>
-                    {/* <div>
-                        <img className="object-scale-down h-48 w-96" src="https://render.fineartamerica.com/images/rendered/default/poster/8/10/break/images/artworkimages/medium/1/red-mars-cover-painting-don-dixon.jpg"/>
-                    </div> */}
+                    <span>{"Started Reading: " + (book?.StartDate ?? "N/A")}</span>
+                    <span>Progress: { book?.CurrentPage ?? 0 } / { book?.PageCount } pages</span>
+                    <span>Total Read Time: { totalReadTime } minutes</span>
                 </div>
-                <div className="flex flex-col rounded-md bg-gray-300 border-slate-900 border-2 p-2">
-                    <Link to="sessions">View Reading Sessions</Link>
-                    <Outlet context={sessions}/>
-                </div>
-                {/* Make this button actually update the text fields */}
-                <button name="intent" value={"update"} disabled={isUpdating}>{isUpdating ? "Updating..." : "Update"}</button>
+                {/* <div>
+                    <img className="object-scale-down h-48 w-96" src="https://render.fineartamerica.com/images/rendered/default/poster/8/10/break/images/artworkimages/medium/1/red-mars-cover-painting-don-dixon.jpg"/>
+                </div> */}
             </div>
-            {/* <Timer /> */}
-        </Form>
+            <div className="flex flex-col rounded-md bg-gray-300 border-slate-900 border-2 p-2">
+                <Link to="sessions">View Reading Sessions</Link>
+                <Outlet context={sessions}/>
+            </div>
+            {/* Make this button actually update the text fields */}
+            <button name="intent" value={"update"} disabled={isUpdating}>{isUpdating ? "Updating..." : "Update"}</button>
+        </div>
     );
 }
 
