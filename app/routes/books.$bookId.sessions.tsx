@@ -1,6 +1,6 @@
 import { Form, Link, Outlet, isRouteErrorResponse, useActionData, useCatch, useLoaderData, useNavigation, useOutletContext, useRouteError, useTransition } from "@remix-run/react";
 import { ActionArgs, json, LoaderArgs } from "@remix-run/server-runtime";
-import { createReadingSession, getBookByUserId } from "~/models/book.server";
+import { createReadingSession, getBookByUserId, getSessionsByBookId } from "~/models/book.server";
 import { requireUserId } from "~/session.server";
 import { prisma } from "~/db.server";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
@@ -38,8 +38,14 @@ export function useBook() {
 export async function loader({ request, params }: LoaderArgs) {
     const userId = await requireUserId(request);
     const bookId = Number(params.bookId);
-    const book = await getBookByUserId(bookId);
-    return 1;//typedjson({ sessions });
+    //const book = await getBookByUserId(bookId);
+    const sessions = await getSessionsByBookId(bookId, userId);
+    
+    if (!sessions) {
+        throw new Error("Error fetching the sessions for this book")
+    }
+    
+    return sessions;
 }
 
 export async function action({ request, params}: ActionArgs) {
@@ -84,14 +90,12 @@ export async function action({ request, params}: ActionArgs) {
     return readingSession;*/
 }
 
-export default function BookDetailPage() {
+export default function SessionsPage() {
     const errors = useActionData<typeof action>();
     const navigation = useNavigation();
     const isUpdating = navigation?.formData?.get("intent") == "update";
 
-    //const data = useTypedLoaderData<typeof loader>();
-    const outletData = useOutletContext<ContextType>();
-    const readingSessions = outletData?.readingSessions;
+    const readingSessions = useTypedLoaderData<typeof loader>();
     const sessionLength = readingSessions?.length ?? 0;
     const lastPage = sessionLength > 0 ? 1 : 0;
 
@@ -115,10 +119,11 @@ function SessionsList({ sessions }: { sessions: any }) {
         <div>
             <ul>
                 {sessions?.map((session: any) => (
-                    <li key={session.Id} className="flex bg-slate-50 rounded-md p-2 border-2 border-slate-900">
-                        <span>Date: { session.StartTime.toLocaleDateString() }</span>
-                        <span>Read Time: { (session.EndTime.getTime() - session.StartTime
-                            .getTime()) / (60 * 60 * 1000) } minute(s)
+                    <li key={session.Id} className="flex flex-col bg-slate-50 rounded-md p-2 border-2 border-slate-900">
+                        {/* <span>Date: { (session.StartTime as Date).toLocaleDateString() }</span> */}
+                        <span>Read Time: { session.Duration } minute(s)
+                            {/* { (session.EndTime.getTime() - session.StartTime
+                            .getTime()) / (60 * 60 * 1000) } minute(s) */}
                         </span>
                         <span>Pages Read: { session.PageEnd - session.PageStart }</span>
                     </li>
