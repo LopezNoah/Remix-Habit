@@ -30,11 +30,11 @@ export function getBooksByUserId({ userId }: { userId: User["Id"] }) {
     });
 }
 
-export function getBookByUserId(Id: number) {
+export function getBookByUserId(BookId: number) {
     return prisma.book.findUnique({
         where: {
             // UserId: userId,
-            Id: Id
+            Id: BookId,
         },
         select: {
             Id: true,
@@ -59,6 +59,23 @@ export function getBookByUserId(Id: number) {
                     PageEnd: true
                 }
             }
+        }
+    });
+}
+
+export function getSessionsByBookId(BookId: number, UserId: number) {
+    return prisma.readingSession.findMany({
+        where: {
+            BookId: BookId,
+            UserId: UserId
+        },
+        select: {
+            Id: true,
+            StartTime: true,
+            EndTime: true,
+            Duration: true,
+            PageStart: true,
+            PageEnd: true
         }
     });
 }
