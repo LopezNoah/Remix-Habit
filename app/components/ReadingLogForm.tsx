@@ -1,15 +1,16 @@
 import React, { ChangeEventHandler, useState } from 'react';
+import type { ReadingSessionType } from '~/routes/books.$bookId.sessions';
 
 //TODO: Add props for default page start when creating new session.
 // should use the last known max value for pageEnd
 
-export function ReadingLogForm() {
+export function ReadingLogForm( { session }: { session?: ReadingSessionType | null }) {
   const [date, setDate] = useState('');
   // const [startTime, setStartTime] = useState('');
   // const [endTime, setEndTime] = useState('');
   const [duration, setDuration] = useState(0);
-  const [pageStart, setPageStart] = useState(0);
-  const [pageEnd, setPageEnd] = useState(0);
+  const [pageStart, setPageStart] = useState(session?.PageEnd ?? 0);
+  const [pageEnd, setPageEnd] = useState(session?.PageEnd ?? 0);
 
   const handleDateChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setDate(event.target.value);

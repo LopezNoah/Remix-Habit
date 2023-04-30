@@ -11,7 +11,7 @@ import * as z from "zod";
 
 
 type ContextType = { readingSessions: ReadingSession[] | null};
-type ReadingSessionType = {
+export type ReadingSessionType = {
     Id: number,
     StartTime: Date,
     EndTime: Date,
@@ -95,9 +95,10 @@ export default function SessionsPage() {
     const navigation = useNavigation();
     const isUpdating = navigation?.formData?.get("intent") == "update";
 
-    const readingSessions = useTypedLoaderData<typeof loader>();
+    const readingSessions: ReadingSessionType[] = useTypedLoaderData<typeof loader>();
     const sessionLength = readingSessions?.length ?? 0;
     const lastPage = sessionLength > 0 ? 1 : 0;
+    const mostRecentSession = sessionLength > 0 ? readingSessions[sessionLength - 1] : null;
 
     return (
         <div className="flex flex-col gap-2">
@@ -106,7 +107,7 @@ export default function SessionsPage() {
                 <p>No reading session logged!</p>
             }
             <Form method="post" className="border-2 border-slate-900 p-2 rounded-md">
-                <ReadingLogForm />
+                <ReadingLogForm session={mostRecentSession}/>
             </Form>
             <Outlet />
         </div>
@@ -114,18 +115,19 @@ export default function SessionsPage() {
 }
 
 //{ sessions: {Id: number, StartTime: Date, EndTime: Date, PageStart: number, PageEnd: number}[] }) {
-function SessionsList({ sessions }: { sessions: any }) {
+function SessionsList({ sessions }: { sessions: ReadingSessionType[] }) {
     return (
         <div>
             <ul>
-                {sessions?.map((session: any) => (
+                {sessions.map((session: ReadingSessionType) => (
                     <li key={session.Id} className="flex flex-col bg-slate-50 rounded-md p-2 border-2 border-slate-900">
-                        {/* <span>Date: { (session.StartTime as Date).toLocaleDateString() }</span> */}
+                        <span>Date: { new Date(session.StartTime).toLocaleDateString() }</span>
                         <span>Read Time: { session.Duration } minute(s)
                             {/* { (session.EndTime.getTime() - session.StartTime
                             .getTime()) / (60 * 60 * 1000) } minute(s) */}
                         </span>
                         <span>Pages Read: { session.PageEnd - session.PageStart }</span>
+                        <span>Pages: { session.PageStart } - { session.PageEnd }</span>
                     </li>
                 ))}
             </ul>
