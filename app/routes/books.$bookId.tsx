@@ -29,9 +29,16 @@ export default function BookDetailPage() {
     const data = useTypedLoaderData<typeof loader>();
     const book = data.book;
     const sessions = book?.ReadingSessions;
-    const totalReadTime = sessions.reduce((acc: any, session: any) => {
-        return acc + ((new Date(session.EndTime).getTime() - new Date(session.StartTime).getTime()) / (60 * 60 * 1000));
-    }, 0);
+    let totalMinutesRead = 0;
+    sessions.forEach(session => {
+        const durationMinutes = session.Duration;
+        totalMinutesRead += durationMinutes;
+    });
+
+    let totalPagesRead = 0;
+    sessions.forEach(session => {
+        totalPagesRead += session.PageEnd - session.PageStart + 1;
+    });
 
 
     return (
@@ -44,8 +51,8 @@ export default function BookDetailPage() {
                         <span className="font-medium">{ book?.Author }</span>
                     </div>
                     <span>{"Started Reading: " + (book?.StartDate ?? "N/A")}</span>
-                    <span>Progress: { book?.CurrentPage ?? 0 } / { book?.PageCount } pages</span>
-                    <span>Total Read Time: { totalReadTime } minutes</span>
+                    <span>Progress: { totalPagesRead } / { book?.PageCount } pages</span>
+                    <span>Total Read Time: { totalMinutesRead } minutes</span>
                 </div>
                 {/* <div>
                     <img className="object-scale-down h-48 w-96" src="https://render.fineartamerica.com/images/rendered/default/poster/8/10/break/images/artworkimages/medium/1/red-mars-cover-painting-don-dixon.jpg"/>
