@@ -48,13 +48,12 @@ model ReadingSession {
   Duration  Int
   PageStart Int
   PageEnd   Int
-  UserId    Int      @unique
+  UserId    Int
   User      User     @relation(fields: [UserId], references: [Id])
   BookId    Int
   Book      Book     @relation(fields: [BookId], references: [Id])
 
-  @@index([UserId])
-  @@index([BookId])
+  @@index([UserId, BookId])
 }
 
 model Tag {
