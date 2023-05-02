@@ -80,6 +80,7 @@ export function InputForm(props: { for: string, id: string, placeholder: string,
   <input
     type={ props.type }
     id={ props.id }
+    name={ props.id }
     placeholder={ props.placeholder }
     onChange={ props.onChange}
     value={ props.value }

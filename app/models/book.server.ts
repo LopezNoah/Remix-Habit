@@ -126,8 +126,8 @@ export function createReadingSession(data: createReadingSessionInput) {
             PageEnd: data.pageEnd,
             StartTime: new Date(),
             EndTime: new Date(),
-            UserId: data.userId,
-        }
+            UserId: data.userId
+        },
     });
     return readingSession;
 }

@@ -52,24 +52,26 @@ export async function action({ request, params}: ActionArgs) {
     const userId = await requireUserId(request);
     const bookId = Number(params.bookId);
 
-    console.log(bookId);
+    console.log("bookId", bookId);
     // if (!bookId) {
     //     throw new Error("This book doesn't exist!");
     // }
 
     const form = await request.formData();
     const formData = Object.fromEntries(form.entries());
-    console.log(formData);
+    console.log("form", form);
     const duration = Number(form.get("duration"));
+    console.log("duration", duration);
     // const startTime = String(form.get("startTime"));
     // const endTime = String(form.get("endTime"));
     const pageStart = Number(form.get("pageStart"));
     const pageEnd = Number(form.get("pageEnd"));
+    console.log("page start", form.get("pageStart"));
+    console.log("pageEnd", pageEnd);
 
-    // const startDate = new Date(startTime);
-    // const endDate = new Date(endTime);
-    // console.log(startDate);
-    // console.log(endDate);
+    if (pageEnd < pageStart) {
+        throw new Error("Starting page must be smaller than ending page");
+    }
 
     const createSessionInput = CreateSessionInputSchema.parse(
             {
@@ -79,7 +81,7 @@ export async function action({ request, params}: ActionArgs) {
                 pageEnd: pageEnd,
                 userId: userId
             });
-    /*const readingSession = await createReadingSession(createSessionInput);
+    const readingSession = await createReadingSession(createSessionInput);
     if (!readingSession){
         throw new Error("The reading session wasn't created!");
     }
@@ -87,7 +89,7 @@ export async function action({ request, params}: ActionArgs) {
     //     throw new Error("Missing data for reading session.");
     // }
 
-    return readingSession;*/
+    return readingSession;
 }
 
 export default function SessionsPage() {
@@ -137,6 +139,7 @@ function SessionsList({ sessions }: { sessions: ReadingSessionType[] }) {
 
 export function ErrorBoundary () {
     const error = useRouteError();
+    console.log(error);
 
     if (isRouteErrorResponse(error)) {
         return (
