@@ -2,13 +2,13 @@ import { Form, Link, Outlet, isRouteErrorResponse, useActionData, useCatch, useL
 import { ActionArgs, json, LoaderArgs } from "@remix-run/server-runtime";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import Timer from "~/components/timer";
-import { getBookByUserId } from "~/models/book.server";
+import { getBookByBookId } from "~/models/book.server";
 import { requireUserId } from "~/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
     const userId = await requireUserId(request);
     const bookId = Number(params.bookId);
-    const book = await getBookByUserId(bookId);
+    const book = await getBookByBookId(bookId);
 
     if (!book) {
         throw new Error("Book not found");

@@ -1,6 +1,6 @@
 import { Form, Link, Outlet, isRouteErrorResponse, useActionData, useCatch, useLoaderData, useNavigation, useOutletContext, useRouteError, useTransition } from "@remix-run/react";
 import { ActionArgs, json, LoaderArgs } from "@remix-run/server-runtime";
-import { createReadingSession, getBookByUserId, getSessionsByBookId } from "~/models/book.server";
+import { createReadingSession, getBookByBookId, getSessionsByBookId } from "~/models/book.server";
 import { requireUserId } from "~/session.server";
 import { prisma } from "~/db.server";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
@@ -40,12 +40,13 @@ export async function loader({ request, params }: LoaderArgs) {
     const bookId = Number(params.bookId);
     //const book = await getBookByUserId(bookId);
     const sessions = await getSessionsByBookId(bookId, userId);
+    const book = await getBookByBookId(bookId);
     
     if (!sessions) {
         throw new Error("Error fetching the sessions for this book")
     }
     
-    return sessions;
+    return { sessions, pageCount: book?.PageCount };
 }
 
 export async function action({ request, params}: ActionArgs) {

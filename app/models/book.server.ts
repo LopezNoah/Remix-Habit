@@ -30,7 +30,7 @@ export function getBooksByUserId({ userId }: { userId: User["Id"] }) {
     });
 }
 
-export function getBookByUserId(BookId: number) {
+export function getBookByBookId(BookId: number) {
     return prisma.book.findUnique({
         where: {
             // UserId: userId,
