@@ -98,20 +98,24 @@ export default function SessionsPage() {
     const navigation = useNavigation();
     const isUpdating = navigation?.formData?.get("intent") == "update";
 
-    const readingSessions: ReadingSessionType[] = useTypedLoaderData<typeof loader>();
-    const sessionLength = readingSessions?.length ?? 0;
+    const  { sessions, pageCount } = useTypedLoaderData<typeof loader>();
+    const sessionLength = sessions?.length ?? 0;
     const lastPage = sessionLength > 0 ? 1 : 0;
-    const mostRecentSession = sessionLength > 0 ? readingSessions[sessionLength - 1] : null;
+    const mostRecentSession = sessionLength > 0 ? sessions[sessionLength - 1] : null;
+
+    //Need to update this so that it uses the action data for most recent session.
+    // Shouldn't stay on the JUST NOW posted data. Needs to be optimistic/fresh.
 
     return (
         <div className="flex flex-col gap-2">
             {sessionLength > 0 ?
-                <SessionsList sessions={readingSessions} /> :
+                <SessionsList sessions={sessions} /> :
                 <p>No reading session logged!</p>
             }
-            <Form method="post" className="border-2 border-slate-900 p-2 rounded-md">
-                <ReadingLogForm session={mostRecentSession}/>
-            </Form>
+            {mostRecentSession?.PageEnd !== pageCount ?
+            (<Form method="post" className="border-2 border-slate-900 p-2 rounded-md">
+                    <ReadingLogForm session={mostRecentSession}/>
+            </Form>) : null}
             <Outlet />
         </div>
     );
@@ -123,7 +127,7 @@ function SessionsList({ sessions }: { sessions: ReadingSessionType[] }) {
         <div>
             <ul>
                 {sessions.map((session: ReadingSessionType) => (
-                    <li key={session.Id} className="flex flex-col bg-slate-50 rounded-md p-2 border-2 border-slate-900">
+                    <li key={session.Id} className="flex flex-col bg-slate-50 rounded-md p-2 border-2 border-slate-900 mb-2">
                         <span>Date: { new Date(session.StartTime).toLocaleDateString() }</span>
                         <span>Read Time: { session.Duration } minute(s)
                             {/* { (session.EndTime.getTime() - session.StartTime
