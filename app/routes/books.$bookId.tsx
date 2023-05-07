@@ -36,9 +36,12 @@ export default function BookDetailPage() {
     });
 
     let totalPagesRead = 0;
-    sessions.forEach(session => {
-        totalPagesRead += session.PageEnd - session.PageStart + 1;
-    });
+    if (sessions.length > 0) {
+        const firstSession = sessions[0];
+        const lastSession = sessions[sessions.length - 1];
+        totalPagesRead = lastSession.PageEnd - firstSession.PageStart;
+    }
+
 
 
     return (

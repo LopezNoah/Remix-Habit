@@ -47,7 +47,9 @@ function MobileBooksContainer(props: { books: book[]}) {
         <div className="border-solid border-4 border-yellow-500 flex flex-col items-center bg-[#f5f4f0] h-screen">
             <div>
                 <Outlet/>
-                <Link to="/books/new">Add Book</Link>
+                <div className="border-2 rounded-md border-green-400 p-2 text-center mb-2 mt-2">
+                  <Link to="/books/new">Add Book</Link>
+                </div>
                 <div>
                     <h1 className="font-bold">Books list</h1>
                     {books.length === 0 ? (
