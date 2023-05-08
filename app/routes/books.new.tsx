@@ -6,6 +6,9 @@ import { createBook } from "~/models/book.server";
 import * as React from "react";
 import { z } from "zod";
 import { makeDomainFunction } from "domain-functions";
+import { Label } from "~/components/ui/label";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
 
 const schema = z.object({
     Title: z.string().min(1),
@@ -150,6 +153,29 @@ export default function NewBook() {
                 {transition.state === "submitting" ? "Creating book..." : "Create Book"}
                 </button>
             </div>
+            {/*
+            <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="title" className="text-right">
+              Title
+            </Label>
+            <Input id="title" value="" className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="author" className="text-right">
+              Author
+            </Label>
+            <Input id="author" value="" className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="pageCount" className="text-right">
+              Page Count
+            </Label>
+            <Input id="pageCount" value="" className="col-span-3" />
+          </div>
+        </div>
+          <Button type="submit">Save changes</Button>
+                */}
             </Form>
         </div>
     );
