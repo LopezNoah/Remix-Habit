@@ -6,6 +6,9 @@ import { User } from "~/models/user.server";
 import { requireUserId } from "~/session.server";
 import { useUser } from "~/utils";
 
+import { ScrollArea } from "@/components/ui/scroll-area"
+
+
 type book = {
         Id: number;
         Title: string;
@@ -55,18 +58,20 @@ function MobileBooksContainer(props: { books: book[]}) {
                     {books.length === 0 ? (
                         <p className="p-4">No Books yet</p>
                     ) : (
+                      <ScrollArea>
                         <ol>
                         {books.map((book) => (
-                            <li key={book.Id}>
-                            <NavLink
+                          <li key={book.Id}>
+                            <Link
                                 className="block border-b p-4 text-xl"
                                 to={book.Id.toString()}
                                 >
                                 📝 {book.Title}
-                            </NavLink>
+                            </Link>
                             </li>
                         ))}
                         </ol>
+                        </ScrollArea>
                     )}
                 </div>
             </div>

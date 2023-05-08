@@ -10,12 +10,16 @@ import {
   V2_MetaArgs,
   V2_MetaFunction,
 } from "@remix-run/react";
+import styles from "./global.css";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
+  return [
+    { rel: "stylesheet", href: tailwindStylesheetUrl },
+    { rel: "stylesheet", href: styles }
+  ];
 };
 
 // export function meta ({ matches }: V2_MetaArgs): V2_MetaFunction {
