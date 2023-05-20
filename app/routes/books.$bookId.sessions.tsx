@@ -8,6 +8,7 @@ import { ReadingSession } from "@prisma/client";
 import Timer from "~/components/timer";
 import ReadingLogForm from "~/components/ReadingLogForm";
 import * as z from "zod";
+import { DataTable, columns, payments } from "~/components/ReadingLogs";
 
 
 type ContextType = { readingSessions: ReadingSession[] | null};
@@ -109,7 +110,13 @@ export default function SessionsPage() {
     return (
         <div className="flex flex-col gap-2">
             {sessionLength > 0 ?
-                <SessionsList sessions={sessions} /> :
+                (
+                    <div>
+                <SessionsList sessions={sessions} /> 
+                <DataTable data={payments} columns={columns}/>
+                </div>
+                )
+                :
                 <p>No reading session logged!</p>
             }
             {mostRecentSession?.PageEnd !== pageCount ?
