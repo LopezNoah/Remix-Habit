@@ -8,7 +8,7 @@ import { ReadingSession } from "@prisma/client";
 import Timer from "~/components/timer";
 import ReadingLogForm from "~/components/ReadingLogForm";
 import * as z from "zod";
-import { DataTable, columns, payments } from "~/components/ReadingLogs";
+import { DataTable, columns } from "~/components/ReadingLogs";
 
 
 type ContextType = { readingSessions: ReadingSession[] | null};
@@ -113,7 +113,8 @@ export default function SessionsPage() {
                 (
                     <div>
                 <SessionsList sessions={sessions} /> 
-                <DataTable data={payments} columns={columns}/>
+                {/* Fix so that this uses the reading sessions */}
+                <DataTable data={sessions} columns={columns}/>
                 </div>
                 )
                 :

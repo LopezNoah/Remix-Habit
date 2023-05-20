@@ -1,44 +1,20 @@
 import { ColumnDef } from "@tanstack/react-table"
+import type { ReadingSessionType } from "~/routes/books.$bookId.sessions"
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Payment = {
-  id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
-}
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<ReadingSessionType>[] = [
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "Duration",
+    header: () => <div className="">Duration</div>,
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: "PageStart",
+    header: () => <div className="">Page Start</div>,
   },
   {
-    accessorKey: "amount",
-    header: "Amount",
+    accessorKey: "PageEnd",
+    header: () => <div className="">Page End</div>,
   },
 ]
-
-
-export const payments: Payment[] = [
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "489e1d42",
-      amount: 125,
-      status: "processing",
-      email: "example@gmail.com",
-    },
-  ]
 
 import {
   flexRender,
