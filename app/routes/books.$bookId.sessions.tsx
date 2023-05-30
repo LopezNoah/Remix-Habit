@@ -111,8 +111,8 @@ export default function SessionsPage() {
         <div className="flex flex-col gap-2">
             {sessionLength > 0 ?
                 (
-                    <div>
-                <SessionsList sessions={sessions} /> 
+                    <div className="w-full">
+                {/* <SessionsList sessions={sessions} />  */}
                 {/* Fix so that this uses the reading sessions */}
                 <DataTable data={sessions} columns={columns}/>
                 </div>

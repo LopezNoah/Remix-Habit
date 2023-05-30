@@ -7,6 +7,7 @@ import { requireUserId } from "~/session.server";
 import { useUser } from "~/utils";
 
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Button } from "~/components/ui/button";
 
 
 type book = {
@@ -50,9 +51,9 @@ function MobileBooksContainer(props: { books: book[]}) {
         <div className="border-solid border-4 border-yellow-500 flex flex-col items-center bg-[#f5f4f0] h-screen">
             <div>
                 <Outlet/>
-                <div className="border-2 rounded-md border-green-400 p-2 text-center mb-2 mt-2">
+                <Button variant="default" className="mt-2">
                   <Link to="/books/new">Add Book</Link>
-                </div>
+                </Button>
                 <div>
                     <h1 className="font-bold">Books list</h1>
                     {books.length === 0 ? (

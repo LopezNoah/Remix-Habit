@@ -1,4 +1,4 @@
-import { Form, Link, Outlet, isRouteErrorResponse, useActionData, useLoaderData, useRouteError, useNavigation } from "@remix-run/react";
+import { Form, Link, Outlet, isRouteErrorResponse, useActionData, useLoaderData, useRouteError, useNavigation, useFetcher, Fetcher, FetcherWithComponents } from "@remix-run/react";
 import { ActionArgs, json, LoaderArgs } from "@remix-run/server-runtime";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import { getBookByBookId } from "~/models/book.server";
@@ -36,6 +36,15 @@ export async function loader({ request, params }: LoaderArgs) {
 }
 
 export async function action({ request, params}: ActionArgs) {
+  //View the values that come from the edit modal
+  console.log("hey there from the action route");
+  const userId = await requireUserId(request);
+  const bookId = Number(params.bookId);
+
+  const form = await request.formData();
+  console.log("my form data: ", form);
+  const intent = form.get("intent");
+  console.log("intent", intent);
     return "hello world";
 }
 
@@ -43,6 +52,7 @@ export default function BookDetailPage() {
     const errors = useActionData<typeof action>();
     const navigation = useNavigation();
     const isUpdating = navigation?.formData?.get("intent") == "update";
+    const fetcher = useFetcher();
 
     const data = useTypedLoaderData<typeof loader>();
     const book = data.book;
@@ -60,7 +70,7 @@ export default function BookDetailPage() {
         totalPagesRead = lastSession.PageEnd - firstSession.PageStart;
     }
 
-    const totalSessions = sessions.length - 1;
+    const totalSessions = sessions.length > 0 ? sessions.length - 1 : 0;
     const minutesPerPage = totalMinutesRead / totalPagesRead;
     const pagesRemaining = book.PageCount - totalPagesRead;
     const timeRemaining = Math.round(pagesRemaining * minutesPerPage);
@@ -89,64 +99,15 @@ export default function BookDetailPage() {
             </div>
             <div className="flex flex-col gap-2">
                 <Button>
-                    <Link to="sessions">View Reading Sessions ({ totalSessions })</Link>
+                  <Link to="sessions">View Reading Sessions ({ totalSessions })</Link>
                 </Button>
-                <EditBookDialog book={book}/>
+                <EditBookDialog book={book} />
                 <Outlet context={sessions}/>
             </div>
         </div>
     );
 }
 
-type BookDialog = {
-    Id: number, Title: string,
-    Author: string,
-    PageCount: number,
-    CurrentPage: number,
-    StartDate: Date | null,
-    EndDateGoal: Date | null
-};
-
-export function EditBookDialog({ book }: {book: BookDialog}) {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="secondary">Edit Book</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Edit {book.Title}</DialogTitle>
-          <DialogDescription>
-            Make changes to your book here. Click save when you're done.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="title" className="text-right">
-              Title
-            </Label>
-            <Input id="title" value={book.Title} className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="author" className="text-right">
-              Author
-            </Label>
-            <Input id="author" value={book.Author} className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="pageCount" className="text-right">
-              Page Count
-            </Label>
-            <Input id="pageCount" value={book.PageCount} className="col-span-3" />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  )
-}
 
  
 export function BookProgress({value }: {value: number}) {
@@ -159,6 +120,58 @@ export function BookProgress({value }: {value: number}) {
   }, [])
  
   return <Progress value={progress} /> // className="w-[60%]" />
+}
+
+type BookDialog = {
+  Id: number, Title: string,
+  Author: string,
+  PageCount: number,
+  CurrentPage: number,
+  StartDate: Date | null,
+  EndDateGoal: Date | null
+};
+
+export function EditBookDialog({ book }: {book: BookDialog }) {
+  return (
+      <Form method="post" action={`/books/${book.Id.toString()}`}>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="secondary">Edit Book</Button>
+      </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit {book.Title}</DialogTitle>
+            <DialogDescription>
+              Make changes to your book here. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="title" className="text-right">
+                Title
+              </Label>
+              <Input id="title" defaultValue={book.Title} className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="author" className="text-right">
+                Author
+              </Label>
+              <Input id="author" defaultValue={book.Author} className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="pageCount" className="text-right">
+                Page Count
+              </Label>
+              <Input id="pageCount" defaultValue={book.PageCount} className="col-span-3" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit" name="intent" value="edit">Save changes</Button>
+          </DialogFooter>
+        </DialogContent>
+    </Dialog>
+      </Form>
+  )
 }
 
 
